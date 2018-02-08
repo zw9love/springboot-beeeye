@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * Created by admin on 2018/2/8.
  */
 @Controller
-@RequestMapping("/error")
+@RequestMapping("/*")
 public class BaseErrorPage implements ErrorController {
     @Override
     public String getErrorPath() {

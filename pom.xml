@@ -9,7 +9,7 @@
 	<!--<packaging>jar</packaging>-->
 	<packaging>war</packaging>
 	<name>spring-boot-beeeye</name>
-	<description>RESTfull API简单项目的快速搭建</description>
+	<description>lpdata-spring-boot-beeeye</description>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>
