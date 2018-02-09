@@ -1,0 +1,19 @@
+package com.roncoo.education;
+
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+
+/**
+ * @author zenngwei
+ * @date 2018/02/09 17:13
+ * @describe 增加静态资源存放位置，暂时没用
+ */
+@Configuration
+public class MvcConfiguration  extends WebMvcConfigurerAdapter {
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("webapp/**").addResourceLocations("classpath:/webapp/");
+        super.addResourceHandlers(registry);
+    }
+}
