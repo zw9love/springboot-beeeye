@@ -3,6 +3,9 @@
  */
 package com.roncoo.education.bean;
 
+
+import org.springframework.boot.autoconfigure.domain.EntityScan;
+
 import java.util.Date;
 
 /**
