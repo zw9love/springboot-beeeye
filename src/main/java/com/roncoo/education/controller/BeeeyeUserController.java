@@ -23,10 +23,10 @@ public class BeeeyeUserController {
 //        String where = " where username = '" + username + "'";
 //        int pageNumber = (int) Double.parseDouble(page.get("pageNumber").toString());
 //        int pageSize = (int) Double.parseDouble(page.get("pageSize").toString());
-//        Page<User> paginate = dao.paginate(pageNumber, pageSize, "select *", " from common_user" + where);
-//        List<User> list = paginate.getList();
+//        Page<UserDao> paginate = dao.paginate(pageNumber, pageSize, "select *", " from common_user" + where);
+//        List<UserDao> list = paginate.getList();
 //        JSONArray postList = new JSONArray();
-//        for (User user : list) {
+//        for (UserDao user : list) {
 //            String[] Names = user._getAttrNames();
 //            JSONObject obj = new JSONObject();
 //            for (String param : Names) {

@@ -79,8 +79,8 @@ public class IndexController {
 
     // @PathVariable 获得请求url中的动态参数
 //    @RequestMapping(value = "/get/{id}/{name}")
-//    public User getUser(@PathVariable int id, @PathVariable String name) {
-//        User user = new User();
+//    public UserDao getUser(@PathVariable int id, @PathVariable String name) {
+//        UserDao user = new UserDao();
 //        user.setId(id);
 //        user.setName(name);
 //        user.setDate(new Date());
