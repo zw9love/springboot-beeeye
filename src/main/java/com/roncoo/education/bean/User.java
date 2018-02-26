@@ -6,6 +6,7 @@ package com.roncoo.education.bean;
 
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -13,32 +14,86 @@ import java.util.Date;
  * 
  * @author zengwei
  */
-public class User {
-	private int id;
-	private String name;
-	private Date date;
+public class User implements Serializable {
+	private String ids;
+	private String loginName;
+	private Date loginPwd;
+	private String username;
+	private String email;
+	private String phone;
+	private String status;
+	private String roleIds;
+	private String recordHash;
 
-	public int getId() {
-		return id;
+	public String getIds() {
+		return ids;
 	}
 
-	public void setId(int id) {
-		this.id = id;
+	public void setIds(String ids) {
+		this.ids = ids;
 	}
 
-	public String getName() {
-		return name;
+	public String getLoginName() {
+		return loginName;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setLoginName(String loginName) {
+		this.loginName = loginName;
 	}
 
-	public Date getDate() {
-		return date;
+	public Date getLoginPwd() {
+		return loginPwd;
 	}
 
-	public void setDate(Date date) {
-		this.date = date;
+	public void setLoginPwd(Date loginPwd) {
+		this.loginPwd = loginPwd;
+	}
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getPhone() {
+		return phone;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	public String getRoleIds() {
+		return roleIds;
+	}
+
+	public void setRoleIds(String roleIds) {
+		this.roleIds = roleIds;
+	}
+
+	public String getRecordHash() {
+		return recordHash;
+	}
+
+	public void setRecordHash(String recordHash) {
+		this.recordHash = recordHash;
 	}
 }
