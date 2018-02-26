@@ -34,7 +34,7 @@ public class BeeeyeMenuController {
                 menu.setIds(resultSet.getString("ids"));
                 menu.setNames(resultSet.getString("names"));
                 menu.setLevel(resultSet.getInt("level"));
-                menu.setParentIds(resultSet.getString("parent_ids"));
+                menu.setParent_ids(resultSet.getString("parent_ids"));
                 menu.setDescription(resultSet.getString("description"));
                 menu.setUrl(resultSet.getString("url"));
                 menu.setIcon(resultSet.getString("icon"));

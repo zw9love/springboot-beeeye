@@ -38,7 +38,7 @@ public class MyUtil {
         return jsonObj;
     }
 
-    public static JSONObject getPageJson(JSONArray list, int pageNumber, int pageSize, int totalPage, int totalRow) {
+    public static JSONObject getPageJson(List list, int pageNumber, int pageSize, int totalPage, int totalRow) {
         JSONObject resObj = new JSONObject();
         try {
             resObj.put("list", list);

@@ -6,11 +6,11 @@ import java.io.Serializable;
  * @author zenngwei
  * @date 2018/02/26 16:07
  */
-public class Menu  implements Serializable {
+public class Menu implements Serializable {
     private String ids;
     private String names;
     private int level;
-    private String parentIds;
+    private String parent_ids;
     private String description;
     private String url;
     private String icon;
@@ -39,12 +39,12 @@ public class Menu  implements Serializable {
         this.level = level;
     }
 
-    public String getParentIds() {
-        return parentIds;
+    public String getParent_ids() {
+        return parent_ids;
     }
 
-    public void setParentIds(String parentIds) {
-        this.parentIds = parentIds;
+    public void setParent_ids(String parent_ids) {
+        this.parent_ids = parent_ids;
     }
 
     public String getDescription() {
