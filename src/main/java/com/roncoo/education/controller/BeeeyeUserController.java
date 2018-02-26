@@ -27,7 +27,7 @@ public class BeeeyeUserController {
         List<User> list=  (List<User>) jdbcTemplate.query(select, new RowMapper<User>() {
             @Override
             public User mapRow(ResultSet resultSet, int i) throws SQLException {
-                System.out.println("index = " + i);
+//                System.out.println("index = " + i);
                 User user = new User();
                 user.setIds(resultSet.getString("ids"));
                 user.setLoginName(resultSet.getString("login_name"));
