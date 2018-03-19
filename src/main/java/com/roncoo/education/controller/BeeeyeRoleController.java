@@ -30,7 +30,7 @@ public class BeeeyeRoleController {
             JSONObject resObj = new JSONObject();
             resObj.put("zh_names", "超级管理员");
             resObj.put("login_name", "root");
-            resObj.put("ids", 0);
+            resObj.put("ids", "0");
             jsonObj = MyUtil.getJson("成功", 200, resObj);
             return jsonObj;
         }

@@ -140,6 +140,14 @@ public class MyUtil {
         return (int) Math.floor(new Date().getTime() / 1000) + 30 * 60;
     }
 
+    public static int getInt(Map<String, Object> json, String name){
+        return (int) Double.parseDouble(json.get(name).toString());
+    }
+
+    public static String getString(Map<String, Object> json, String name){
+        return (String)json.get(name);
+    }
+
     /**
      *
      * @param title 邮件主题

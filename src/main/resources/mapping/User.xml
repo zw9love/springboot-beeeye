@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.roncoo.education.bean.User">
+    <select id="selectUserByID" parameterType="String" resultType="com.roncoo.education.bean.User">
+        SELECT * FROM common_user where ids = #{ids}
+    </select>
+    <!--1、普通map-->
+    <select id="selectUserPage"  resultType="com.roncoo.education.bean.User" parameterType="java.util.Map">
+        SELECT * FROM common_user limit #{pageStart},  #{pageSize}
+    </select>
+    <!--2、javabean-->
+    <!--<select id="selectUserPage"  resultType="com.roncoo.education.bean.User" parameterType="com.roncoo.education.bean.PageParam">-->
+      <!--SELECT * FROM common_user limit #{pageStart},  #{pageSize}-->
+    <!--</select>-->
+    <update id="updateUser" parameterType="java.util.Map">
+        UPDATE common_user SET username = #{username}, email = #{email} where ids = #{ids}
+    </update>
+    <delete id="deleteUserByID" parameterType="String">
+        delete from common_user where ids = #{ids}
+    </delete>
+</mapper>
