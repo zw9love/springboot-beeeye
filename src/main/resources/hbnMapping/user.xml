@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="com.roncoo.education.bean">
+    <class table="common_user" name="User">
+        <id name="ids" column="ids">
+            <generator class="assigned"/>
+        </id>
+        <property name="loginName" column="login_name" update="false"/>
+        <property name="loginPwd" column="login_pwd" update="false"/>
+        <property name="username" column="username" />
+        <property name="email" column="email" />
+        <property name="phone" column="phone" update="false"/>
+        <property name="status" column="status" />
+        <property name="roleIds" column="role_ids" update="false"/>
+        <property name="recordHash" column="record_hash" update="false"/>
+    </class>
+</hibernate-mapping>

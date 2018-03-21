@@ -108,13 +108,12 @@
 			<artifactId>mybatis</artifactId>
 			<version>3.4.6</version>
 		</dependency>
-
-
-		<!--&lt;!&ndash; 添加Hibernate依赖 &ndash;&gt;-->
-		<!--<dependency>-->
-			<!--<groupId>org.hibernate</groupId>-->
-			<!--<artifactId>hibernate-core</artifactId>-->
-		<!--</dependency>-->
+		<!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-core -->
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-core</artifactId>
+			<version>5.2.15.Final</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>

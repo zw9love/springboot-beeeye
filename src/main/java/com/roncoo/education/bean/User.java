@@ -6,6 +6,7 @@ package com.roncoo.education.bean;
 
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 
+import javax.persistence.Column;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -17,7 +18,7 @@ import java.util.Date;
 public class User implements Serializable {
 	private String ids;
 	private String loginName;
-	private Date loginPwd;
+	private String loginPwd;
 	private String username;
 	private String email;
 	private String phone;
@@ -41,11 +42,11 @@ public class User implements Serializable {
 		this.loginName = loginName;
 	}
 
-	public Date getLoginPwd() {
+	public String getLoginPwd() {
 		return loginPwd;
 	}
 
-	public void setLoginPwd(Date loginPwd) {
+	public void setLoginPwd(String loginPwd) {
 		this.loginPwd = loginPwd;
 	}
 
