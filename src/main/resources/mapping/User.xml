@@ -15,6 +15,9 @@
     <update id="updateUser" parameterType="java.util.Map">
         UPDATE common_user SET username = #{username}, email = #{email} where ids = #{ids}
     </update>
+    <insert id="insertUser" parameterType="java.util.Map">
+        INSERT INTO common_user (role_ids, record_hash,  ids, username, login_name, login_pwd, email) VALUES ('0', '',  #{ids}, #{username}, #{loginName}, #{loginPwd}, #{email})
+    </insert>
     <delete id="deleteUserByID" parameterType="String">
         delete from common_user where ids = #{ids}
     </delete>

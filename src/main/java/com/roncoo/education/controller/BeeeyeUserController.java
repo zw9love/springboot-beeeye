@@ -129,6 +129,34 @@ public class BeeeyeUserController {
         }
     }
 
+    @RequestMapping("/post")
+    public JSONObject post(HttpServletRequest request, HttpServletResponse response) {
+        Map<String, Object> json = MyUtil.getJsonData(request);
+        String ids = MyUtil.getRandomString();
+        String username = MyUtil.getString(json, "username");
+        String loginName = MyUtil.getString(json, "login_name");
+        String loginPwd = MD5Util.encrypt(MyUtil.getString(json, "login_pwd"));
+        String email = MyUtil.getString(json, "email");
+        SqlSession session = sqlSessionFactory.openSession();
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("username", username);
+        params.put("email", email);
+        params.put("loginName", loginName);
+        params.put("loginPwd", loginPwd);
+        params.put("ids", ids);
+        try {
+            session.insert("insertUser", params);
+//            session.update("updateUser", params);
+            session.commit();
+            return MyUtil.getJson("成功", 200, null);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return MyUtil.getJson("失败", 606, null);
+        } finally {
+            session.close();
+        }
+    }
+
     @RequestMapping("/put")
     public JSONObject put(HttpServletRequest request, HttpServletResponse response) {
         Map<String, Object> json = MyUtil.getJsonData(request);
