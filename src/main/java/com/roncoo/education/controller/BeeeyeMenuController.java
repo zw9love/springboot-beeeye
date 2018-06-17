@@ -26,7 +26,7 @@ public class BeeeyeMenuController {
     @RequestMapping("get")
     public JSONObject get() throws JSONException {
         String select = " SELECT * FROM common_menu ";
-        List<Menu> list=  (List<Menu>) jdbcTemplate.query(select, new RowMapper<Menu>() {
+        List<Menu> list = jdbcTemplate.query(select, new RowMapper<Menu>() {
             @Override
             public Menu mapRow(ResultSet resultSet, int i) throws SQLException {
 //                System.out.println("index = " + i);

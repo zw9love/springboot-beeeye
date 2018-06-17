@@ -3,6 +3,7 @@ package com.roncoo.education.controller;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import com.roncoo.education.bean.Host;
+import com.roncoo.education.mapper.HostRowMapper;
 import com.roncoo.education.util.MyUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -50,24 +51,25 @@ public class BeeeyeHostController {
         String pageSql = " limit ?, ? ";
         Object[] params = new Object[]{pageStart, pageSize};
         // 获取list
-        List<Host> list = (List<Host>) jdbcTemplate.query(select + pageSql, params, new RowMapper<Host>() {
-            @Override
-            public Host mapRow(ResultSet resultSet, int i) throws SQLException {
-//                System.out.println("index = " + i);
-                Host host = new Host();
-                host.setHost_ids(resultSet.getString("host_ids"));
-                host.setName(resultSet.getString("name"));
-                host.setIp(resultSet.getString("ip"));
-                host.setPort(resultSet.getInt("port"));
-                host.setOs_type(resultSet.getString("os_type"));
-                host.setOs_version(resultSet.getString("os_version"));
-                host.setOs_arch(resultSet.getString("os_arch"));
-                host.setLogin_name(resultSet.getString("login_name"));
-                host.setLogin_pwd(resultSet.getString("login_pwd"));
-                host.setStatus(resultSet.getInt("status"));
-                return host;
-            }
-        });
+//        List<Host> list = (List<Host>) jdbcTemplate.query(select + pageSql, params, new RowMapper<Host>() {
+//            @Override
+//            public Host mapRow(ResultSet resultSet, int i) throws SQLException {
+//                Host host = new Host();
+//                host.setHost_ids(resultSet.getString("host_ids"));
+//                host.setName(resultSet.getString("name"));
+//                host.setIp(resultSet.getString("ip"));
+//                host.setPort(resultSet.getInt("port"));
+//                host.setOs_type(resultSet.getString("os_type"));
+//                host.setOs_version(resultSet.getString("os_version"));
+//                host.setOs_arch(resultSet.getString("os_arch"));
+//                host.setLogin_name(resultSet.getString("login_name"));
+//                host.setLogin_pwd(resultSet.getString("login_pwd"));
+//                host.setStatus(resultSet.getInt("status"));
+//                return host;
+//            }
+//        });
+
+        List<Host> list = jdbcTemplate.query(select + pageSql, params, new HostRowMapper());
         // 获取总数
         Integer totalRow = jdbcTemplate.queryForObject(count, Integer.class);
         int totalPage = (int) Math.ceil((double) totalRow / (double) pageSize);
@@ -87,25 +89,27 @@ public class BeeeyeHostController {
         JSONObject jsonObj;
         if (ids != null) {
             String sql = " SELECT * FROM beeeye_host where host_ids = ? ";
-            Object[] params = new Object[]{ids};
-            List<Host> list = jdbcTemplate.query(sql, params, new RowMapper<Host>() {
-                @Override
-                public Host mapRow(ResultSet resultSet, int i) throws SQLException {
-                    Host host = new Host();
-                    host.setHost_ids(resultSet.getString("host_ids"));
-                    host.setName(resultSet.getString("name"));
-                    host.setLogin_name(resultSet.getString("login_name"));
-                    host.setLogin_pwd(resultSet.getString("login_pwd"));
-                    host.setIp(resultSet.getString("ip"));
-                    host.setPort(resultSet.getInt("port"));
-                    host.setOs_type(resultSet.getString("os_type"));
-                    host.setOs_version(resultSet.getString("os_version"));
-                    host.setOs_arch(resultSet.getString("os_arch"));
-                    host.setStatus(resultSet.getInt("status"));
-                    return host;
-                }
-            });
-            jsonObj = MyUtil.getJson("成功", 200, list.get(0));
+            Host host = jdbcTemplate.queryForObject(sql, new HostRowMapper(), ids);
+            jsonObj = MyUtil.getJson("成功", 200, host);
+//            Object[] params = new Object[]{ids};
+//            List<Host> list = jdbcTemplate.query(sql, params, new RowMapper<Host>() {
+//                @Override
+//                public Host mapRow(ResultSet resultSet, int i) throws SQLException {
+//                    Host host = new Host();
+//                    host.setHost_ids(resultSet.getString("host_ids"));
+//                    host.setName(resultSet.getString("name"));
+//                    host.setLogin_name(resultSet.getString("login_name"));
+//                    host.setLogin_pwd(resultSet.getString("login_pwd"));
+//                    host.setIp(resultSet.getString("ip"));
+//                    host.setPort(resultSet.getInt("port"));
+//                    host.setOs_type(resultSet.getString("os_type"));
+//                    host.setOs_version(resultSet.getString("os_version"));
+//                    host.setOs_arch(resultSet.getString("os_arch"));
+//                    host.setStatus(resultSet.getInt("status"));
+//                    return host;
+//                }
+//            });
+//            jsonObj = MyUtil.getJson("成功", 200, list.get(0));
         } else {
             jsonObj = MyUtil.getJson("失败", 200, null);
         }
