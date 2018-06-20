@@ -10,13 +10,13 @@ import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 //import org.hibernate.SQLQuery;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
-import org.hibernate.cfg.Configuration;
-import org.hibernate.query.NativeQuery;
+//import org.hibernate.Session;
+//import org.hibernate.SessionFactory;
+//import org.hibernate.Transaction;
+//import org.hibernate.cfg.Configuration;
+//import org.hibernate.query.NativeQuery;
 //import org.hibernate.query.Query;
-import org.hibernate.query.Query;
+//import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -195,128 +195,128 @@ public class BeeeyeUserController {
         }
     }
 
-    ///3、以下是hibernate获取数据
-    private static SessionFactory sf;
-    static {
-        //创建SessionFactory对象
-        sf = new Configuration().configure().buildSessionFactory();
-    }
-
-    @RequestMapping("testget")
-    public JSONObject testGet(HttpServletRequest request, HttpServletResponse response) throws JSONException {
-        Map<String, Object> json = MyUtil.getJsonData(request);
-        Map<String, Object> page = (Map<String, Object>) json.get("page");
-        int pageNumber = MyUtil.getInt(page, "pageNumber");
-        int pageSize = MyUtil.getInt(page, "pageSize");
-        int pageStart = (pageNumber - 1) * pageSize;
-        Session session = sf.openSession();
-        Transaction tx = session.beginTransaction();
-
-//        已经过时。。。
-//        //把每一行记录封装为对象数组，再添加到list集合
-//        NativeQuery nativeQuery = session.createSQLQuery("SELECT * FROM common_user limit ?, ?");
-//        nativeQuery.setParameter(0, pageStart);
-//        nativeQuery.setParameter(1, pageSize);
+//    ///3、以下是hibernate获取数据
+//    private static SessionFactory sf;
+//    static {
+//        //创建SessionFactory对象
+//        sf = new Configuration().configure().buildSessionFactory();
+//    }
+//
+//    @RequestMapping("testget")
+//    public JSONObject testGet(HttpServletRequest request, HttpServletResponse response) throws JSONException {
+//        Map<String, Object> json = MyUtil.getJsonData(request);
+//        Map<String, Object> page = (Map<String, Object>) json.get("page");
+//        int pageNumber = MyUtil.getInt(page, "pageNumber");
+//        int pageSize = MyUtil.getInt(page, "pageSize");
+//        int pageStart = (pageNumber - 1) * pageSize;
+//        Session session = sf.openSession();
+//        Transaction tx = session.beginTransaction();
+//
+////        已经过时。。。
+////        //把每一行记录封装为对象数组，再添加到list集合
+////        NativeQuery nativeQuery = session.createSQLQuery("SELECT * FROM common_user limit ?, ?");
+////        nativeQuery.setParameter(0, pageStart);
+////        nativeQuery.setParameter(1, pageSize);
+////        //把每一行记录封装为指定的对象类型
+////        SQLQuery sqlQuery = nativeQuery.addEntity(User.class);
+////        List list = sqlQuery.list();
+//
+////        //把每一行记录封装为对象数组，再添加到list集合
+////        NativeQuery nativeQuery = session.createNativeQuery("SELECT * FROM common_user limit ?, ?");
+////        nativeQuery.setParameter(0, pageStart);
+////        nativeQuery.setParameter(1, pageSize);
+//        NativeQuery nativeQuery = session.createNativeQuery("SELECT * FROM common_user limit :pageStart, :pageSize");
+//        nativeQuery.setParameter("pageStart", pageStart);
+//        nativeQuery.setParameter("pageSize", pageSize);
 //        //把每一行记录封装为指定的对象类型
-//        SQLQuery sqlQuery = nativeQuery.addEntity(User.class);
+//        NativeQuery sqlQuery = nativeQuery.addEntity(User.class);
 //        List list = sqlQuery.list();
-
-//        //把每一行记录封装为对象数组，再添加到list集合
-//        NativeQuery nativeQuery = session.createNativeQuery("SELECT * FROM common_user limit ?, ?");
-//        nativeQuery.setParameter(0, pageStart);
-//        nativeQuery.setParameter(1, pageSize);
-        NativeQuery nativeQuery = session.createNativeQuery("SELECT * FROM common_user limit :pageStart, :pageSize");
-        nativeQuery.setParameter("pageStart", pageStart);
-        nativeQuery.setParameter("pageSize", pageSize);
-        //把每一行记录封装为指定的对象类型
-        NativeQuery sqlQuery = nativeQuery.addEntity(User.class);
-        List list = sqlQuery.list();
-
-        //关闭
-        tx.commit();
-        session.close();
-        return MyUtil.getJson("成功", 200, list);
-    }
-
-    @RequestMapping("testget/{ids}")
-    public JSONObject testGetById(@PathVariable String ids, HttpServletRequest request, HttpServletResponse response) throws JSONException {
-        Session session = sf.openSession();
-        User user = new User();
-        user.setIds(ids);
-        Transaction tx = session.beginTransaction();
-        NativeQuery nativeQuery = session.createNativeQuery("SELECT * FROM common_user where ids = :ids");
-        nativeQuery.setParameter("ids", ids);
-        //把每一行记录封装为指定的对象类型
-        NativeQuery sqlQuery = nativeQuery.addEntity(User.class);
-        List list = sqlQuery.list();
-        tx.commit();
-        session.close();
-        return MyUtil.getJson("成功", 200, list.get(0));
-    }
-
-    @RequestMapping("testdelete/{ids}")
-    public JSONObject testDelete(@PathVariable String ids, HttpServletRequest request, HttpServletResponse response) throws JSONException {
-        Session session = sf.openSession();
-        User user = new User();
-        user.setIds(ids);
-        Transaction tx = session.beginTransaction();
-        session.delete(user);
-        tx.commit();
-        session.close();
-        return MyUtil.getJson("成功", 200, null);
-    }
-
-    @RequestMapping("testput")
-    public JSONObject testPut(HttpServletRequest request, HttpServletResponse response) throws JSONException {
-        Map<String, Object> json = MyUtil.getJsonData(request);
-        String ids = MyUtil.getString(json, "ids");
-        String username = MyUtil.getString(json, "username");
-        String email = MyUtil.getString(json, "email");
-        Session session = sf.openSession();
-        User user = new User();
-        user.setIds(ids);
-        user.setUsername(username);
-        user.setEmail(email);
-        user.setStatus("normal");
-        Transaction tx = session.beginTransaction();
-        session.update(user);
-        tx.commit();
-        session.close();
-        return MyUtil.getJson("成功", 200, null);
-    }
-
-    @RequestMapping("testpost")
-    public JSONObject testPost(HttpServletRequest request, HttpServletResponse response) throws JSONException {
-        HttpSession httpSession = request.getSession();
-        String token = request.getHeader("token");
-        Map<String, Object> json = MyUtil.getJsonData(request);
-        String ids = MyUtil.getRandomString();
-        String username = MyUtil.getString(json, "username");
-        String login_name = MyUtil.getString(json, "login_name");
-        String login_pwd = MD5Util.encrypt(MyUtil.getString(json, "login_pwd"));
-        String role_ids;
-        if(token.equals("debug"))
-            role_ids = "0";
-        else{
-            JSONObject role = (JSONObject) httpSession.getAttribute(token);
-            role_ids = (String) role.get("ids");
-        }
-        String email = MyUtil.getString(json, "email");
-        Session session = sf.openSession();
-        User user = new User();
-        user.setIds(ids);
-        user.setLoginName(login_name);
-        user.setLoginPwd(login_pwd);
-        user.setUsername(username);
-        user.setEmail(email);
-        user.setStatus("normal");
-        user.setPhone("");
-        user.setRoleIds(role_ids);
-        user.setRecordHash("");
-        Transaction tx = session.beginTransaction();
-        session.save(user);
-        tx.commit();
-        session.close();
-        return MyUtil.getJson("成功", 200, null);
-    }
+//
+//        //关闭
+//        tx.commit();
+//        session.close();
+//        return MyUtil.getJson("成功", 200, list);
+//    }
+//
+//    @RequestMapping("testget/{ids}")
+//    public JSONObject testGetById(@PathVariable String ids, HttpServletRequest request, HttpServletResponse response) throws JSONException {
+//        Session session = sf.openSession();
+//        User user = new User();
+//        user.setIds(ids);
+//        Transaction tx = session.beginTransaction();
+//        NativeQuery nativeQuery = session.createNativeQuery("SELECT * FROM common_user where ids = :ids");
+//        nativeQuery.setParameter("ids", ids);
+//        //把每一行记录封装为指定的对象类型
+//        NativeQuery sqlQuery = nativeQuery.addEntity(User.class);
+//        List list = sqlQuery.list();
+//        tx.commit();
+//        session.close();
+//        return MyUtil.getJson("成功", 200, list.get(0));
+//    }
+//
+//    @RequestMapping("testdelete/{ids}")
+//    public JSONObject testDelete(@PathVariable String ids, HttpServletRequest request, HttpServletResponse response) throws JSONException {
+//        Session session = sf.openSession();
+//        User user = new User();
+//        user.setIds(ids);
+//        Transaction tx = session.beginTransaction();
+//        session.delete(user);
+//        tx.commit();
+//        session.close();
+//        return MyUtil.getJson("成功", 200, null);
+//    }
+//
+//    @RequestMapping("testput")
+//    public JSONObject testPut(HttpServletRequest request, HttpServletResponse response) throws JSONException {
+//        Map<String, Object> json = MyUtil.getJsonData(request);
+//        String ids = MyUtil.getString(json, "ids");
+//        String username = MyUtil.getString(json, "username");
+//        String email = MyUtil.getString(json, "email");
+//        Session session = sf.openSession();
+//        User user = new User();
+//        user.setIds(ids);
+//        user.setUsername(username);
+//        user.setEmail(email);
+//        user.setStatus("normal");
+//        Transaction tx = session.beginTransaction();
+//        session.update(user);
+//        tx.commit();
+//        session.close();
+//        return MyUtil.getJson("成功", 200, null);
+//    }
+//
+//    @RequestMapping("testpost")
+//    public JSONObject testPost(HttpServletRequest request, HttpServletResponse response) throws JSONException {
+//        HttpSession httpSession = request.getSession();
+//        String token = request.getHeader("token");
+//        Map<String, Object> json = MyUtil.getJsonData(request);
+//        String ids = MyUtil.getRandomString();
+//        String username = MyUtil.getString(json, "username");
+//        String login_name = MyUtil.getString(json, "login_name");
+//        String login_pwd = MD5Util.encrypt(MyUtil.getString(json, "login_pwd"));
+//        String role_ids;
+//        if(token.equals("debug"))
+//            role_ids = "0";
+//        else{
+//            JSONObject role = (JSONObject) httpSession.getAttribute(token);
+//            role_ids = (String) role.get("ids");
+//        }
+//        String email = MyUtil.getString(json, "email");
+//        Session session = sf.openSession();
+//        User user = new User();
+//        user.setIds(ids);
+//        user.setLoginName(login_name);
+//        user.setLoginPwd(login_pwd);
+//        user.setUsername(username);
+//        user.setEmail(email);
+//        user.setStatus("normal");
+//        user.setPhone("");
+//        user.setRoleIds(role_ids);
+//        user.setRecordHash("");
+//        Transaction tx = session.beginTransaction();
+//        session.save(user);
+//        tx.commit();
+//        session.close();
+//        return MyUtil.getJson("成功", 200, null);
+//    }
 }
