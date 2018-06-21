@@ -34,6 +34,22 @@ public class BeeeyeHostController {
     private String tableName = "beeeye_host";
 
     /**
+     * Host对象私有方法
+     * @param versionList
+     * @param version
+     * @param arch
+     */
+
+    private void getList(List<JSONObject> versionList, String version, String arch){
+        JSONObject versionMap = new JSONObject();
+        List<String> archList = new ArrayList<String>();
+        archList.add(arch);
+        versionMap.put("value", version);
+        versionMap.put("arch", archList);
+        versionList.add(versionMap);
+    }
+
+    /**
      * 获取主机列表
      * @param request
      * @param response
@@ -162,12 +178,13 @@ public class BeeeyeHostController {
                     List<JSONObject> versionList = (List<JSONObject>) resItem.get("version");
                     if (versionName.equals(type)) {
                         if (versionList.size() == 0) {
-                            JSONObject versionMap = new JSONObject();
-                            List<String> archList = new ArrayList<String>();
-                            archList.add(arch);
-                            versionMap.put("value", version);
-                            versionMap.put("arch", archList);
-                            versionList.add(versionMap);
+                            getList(versionList, version, arch);
+//                            JSONObject versionMap = new JSONObject();
+//                            List<String> archList = new ArrayList<String>();
+//                            archList.add(arch);
+//                            versionMap.put("value", version);
+//                            versionMap.put("arch", archList);
+//                            versionList.add(versionMap);
                         } else {
                             Boolean flag = true;
                             for (JSONObject versionItem : versionList) {
@@ -179,12 +196,13 @@ public class BeeeyeHostController {
                                 }
                             }
                             if (flag) {
-                                JSONObject versionMap = new JSONObject();
-                                List<String> archList = new ArrayList<String>();
-                                archList.add(arch);
-                                versionMap.put("value", version);
-                                versionMap.put("arch", archList);
-                                versionList.add(versionMap);
+                                getList(versionList, version, arch);
+//                                JSONObject versionMap = new JSONObject();
+//                                List<String> archList = new ArrayList<String>();
+//                                archList.add(arch);
+//                                versionMap.put("value", version);
+//                                versionMap.put("arch", archList);
+//                                versionList.add(versionMap);
                             }
                         }
                     }

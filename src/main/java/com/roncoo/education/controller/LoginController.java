@@ -3,6 +3,7 @@ package com.roncoo.education.controller;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import com.roncoo.education.bean.User;
+import com.roncoo.education.mapper.UserRowMapper;
 import com.roncoo.education.util.MD5Util;
 import com.roncoo.education.validator.LoginValidator;
 import org.slf4j.Logger;
@@ -79,16 +80,7 @@ public class LoginController {
             logger.info("login_name = " + loginName);
             logger.info("login_pwd = " + loginPwd);
             String sql = " SELECT * FROM common_user where login_name = ? and login_pwd = ? ";
-            List<User> list = jdbcTemplate.query(sql, params, new RowMapper<User>() {
-                @Override
-                public User mapRow(ResultSet resultSet, int i) throws SQLException {
-                    User user = new User();
-                    user.setIds(resultSet.getString("ids"));
-                    user.setLoginName(resultSet.getString("login_name"));
-                    user.setUsername(resultSet.getString("username"));
-                    return user;
-                }
-            });
+            List<User> list = jdbcTemplate.query(sql, params, new UserRowMapper());
             if (list.size() > 0) {
                 JSONObject obj = new JSONObject();
                 String userLoginName = list.get(0).getLoginName();
