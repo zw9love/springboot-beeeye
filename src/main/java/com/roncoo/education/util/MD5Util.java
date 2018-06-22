@@ -5,6 +5,13 @@ package com.roncoo.education.util;
 import java.security.MessageDigest;
 
 public class MD5Util {
+
+    public static void main(String[] args) {
+        // 6350238.ll     前台加密后是：69bdb4557a463410be2927ea92786357
+        System.out.println(MD5Util.encrypt("69bdb4557a463410be2927ea92786357")); //E7L2CDGGLL5M25ACB7D216FLL2B76D25
+    }
+
+
     // 生成MD5
     public static String encrypt(String message) {
         String md5 = "";

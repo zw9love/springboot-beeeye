@@ -145,6 +145,12 @@ public class MyUtil {
     }
 
     public static String getString(Map<String, Object> json, String name){
+//        String str = (String)json.get(name);
+//        if(str.contains(":")){
+//            System.out.println(111);
+//            str.replaceAll(":", ":\\");
+//        }
+//        return str;
         return (String)json.get(name);
     }
 

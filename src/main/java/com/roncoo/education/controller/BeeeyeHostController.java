@@ -58,14 +58,28 @@ public class BeeeyeHostController {
     @RequestMapping("get")
     public JSONObject get(HttpServletRequest request, HttpServletResponse response) throws JSONException {
         String select = " SELECT * FROM  " + tableName;
-        String count = " SELECT count(*) FROM  " + tableName;
         Map<String, Object> json = MyUtil.getJsonData(request);
-        Map<String, Object> page = (Map<String, Object>) json.get("page");
-        int pageNumber = (int) Double.parseDouble(page.get("pageNumber").toString());
-        int pageSize = (int) Double.parseDouble(page.get("pageSize").toString());
-        int pageStart = (pageNumber - 1) * pageSize;
-        String pageSql = " limit ?, ? ";
-        Object[] params = new Object[]{pageStart, pageSize};
+        if(json != null){
+            Map<String, Object> page = (Map<String, Object>) json.get("page");
+            if(page != null){
+                String count = " SELECT count(*) FROM  " + tableName;
+                int pageNumber = (int) Double.parseDouble(page.get("pageNumber").toString());
+                int pageSize = (int) Double.parseDouble(page.get("pageSize").toString());
+                int pageStart = (pageNumber - 1) * pageSize;
+                String pageSql = " limit ?, ? ";
+                Object[] params = new Object[]{pageStart, pageSize};
+                List<Host> list = jdbcTemplate.query(select + pageSql, params, new HostRowMapper());
+                // 获取总数
+                Integer totalRow = jdbcTemplate.queryForObject(count, Integer.class);
+                int totalPage = (int) Math.ceil((double) totalRow / (double) pageSize);
+                JSONObject resObj = MyUtil.getPageJson(list, pageNumber, pageSize, totalPage, totalRow);
+                return MyUtil.getJson("成功", 200, resObj);
+            }
+        }
+
+        List<Host> list = jdbcTemplate.query(select, new HostRowMapper());
+        JSONObject jsonObj = MyUtil.getJson("成功", 200, list);
+
         // 获取list
 //        List<Host> list = (List<Host>) jdbcTemplate.query(select + pageSql, params, new RowMapper<Host>() {
 //            @Override
@@ -85,12 +99,7 @@ public class BeeeyeHostController {
 //            }
 //        });
 
-        List<Host> list = jdbcTemplate.query(select + pageSql, params, new HostRowMapper());
-        // 获取总数
-        Integer totalRow = jdbcTemplate.queryForObject(count, Integer.class);
-        int totalPage = (int) Math.ceil((double) totalRow / (double) pageSize);
-        JSONObject resObj = MyUtil.getPageJson(list, pageNumber, pageSize, totalPage, totalRow);
-        JSONObject jsonObj = MyUtil.getJson("成功", 200, resObj);
+
         return jsonObj;
     }
 

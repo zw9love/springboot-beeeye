@@ -86,10 +86,12 @@ public class LoginController {
                 String userLoginName = list.get(0).getLoginName();
                 String userName = list.get(0).getUsername();
                 String ids = list.get(0).getIds();
+                String roleIds = list.get(0).getRoleIds();
                 int expireTime = MyUtil.getRefreshTime();
                 obj.put("login_name", userLoginName);
                 obj.put("username", userName);
                 obj.put("ids", ids);
+                obj.put("roleIds", roleIds);
                 obj.put("expireTime", expireTime);
                 HttpSession session = request.getSession();
                 String token = MyUtil.getRandomString();
