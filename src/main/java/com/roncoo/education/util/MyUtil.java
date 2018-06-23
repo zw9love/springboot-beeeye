@@ -62,7 +62,7 @@ public class MyUtil {
 
     }
 
-    public static JSONObject getSizeJson(JSONArray list, JSONObject size, int total) {
+    public static JSONObject getSizeJson(List list, JSONObject size, int total) {
         JSONObject resObj = new JSONObject();
         try {
             resObj.put("list", list);
