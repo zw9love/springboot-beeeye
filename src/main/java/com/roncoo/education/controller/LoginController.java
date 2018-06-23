@@ -83,10 +83,10 @@ public class LoginController {
             List<User> list = jdbcTemplate.query(sql, params, new UserRowMapper());
             if (list.size() > 0) {
                 JSONObject obj = new JSONObject();
-                String userLoginName = list.get(0).getLoginName();
+                String userLoginName = list.get(0).getLogin_name();
                 String userName = list.get(0).getUsername();
                 String ids = list.get(0).getIds();
-                String roleIds = list.get(0).getRoleIds();
+                String roleIds = list.get(0).getRole_ids();
                 int expireTime = MyUtil.getRefreshTime();
                 obj.put("login_name", userLoginName);
                 obj.put("username", userName);

@@ -219,7 +219,8 @@ public class BeeeyeHostController {
             }
             jsonObj = MyUtil.getJson("成功", 200, resList);
         } else {
-            jsonObj = MyUtil.getJson("系统文件不存在。", 606, null);
+//            jsonObj = MyUtil.getJson("系统文件不存在。", 606, null);
+            jsonObj = MyUtil.getJson("系统文件不存在。", 200, null);
         }
         return jsonObj;
     }
@@ -298,7 +299,7 @@ public class BeeeyeHostController {
         if (effectRow > 0)
             jsonObj = MyUtil.getJson("成功", 200, null);
         else
-            jsonObj = MyUtil.getJson("失败，此主机不存在", 606, "");
+            jsonObj = MyUtil.getJson("删除失败", 606, null);
         return jsonObj;
     }
 
