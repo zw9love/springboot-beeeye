@@ -42,6 +42,7 @@ public class BeeeyeMenuController {
             JSONObject role = (JSONObject) session.getAttribute(token);
             role_ids = (String) role.get("roleIds");
         }
+        System.out.println(role_ids);
 //        String select = " SELECT * FROM common_menu where names in ( select record_hash from common_module_role where role_ids = ? )";
         String select = "select lmr.ids as idss, common_menu.ids as ids, names, level, parent_ids, lmr.read r, lmr.write  w, url, icon from common_menu " +
                 "left join common_module_role as lmr on lmr.module_ids = common_menu.ids " +

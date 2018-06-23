@@ -79,7 +79,10 @@ public class LoginController {
             Object[] params = new Object[]{loginName, loginPwd};
             logger.info("login_name = " + loginName);
             logger.info("login_pwd = " + loginPwd);
-            String sql = " SELECT * FROM common_user where login_name = ? and login_pwd = ? ";
+//            String sql = " SELECT * FROM common_user where login_name = ? and login_pwd = ? ";
+            String sql = "select zh_names, user.ids, user.email, user.login_name, user.username, user.phone, user.status, user.role_ids " +
+                    "from (select * from common_user where login_name = ? and login_pwd = ? ) as user " +
+                    "inner join common_role  as role on user.role_ids = role.ids";
             List<User> list = jdbcTemplate.query(sql, params, new UserRowMapper());
             if (list.size() > 0) {
                 JSONObject obj = new JSONObject();
@@ -87,6 +90,7 @@ public class LoginController {
                 String userName = list.get(0).getUsername();
                 String ids = list.get(0).getIds();
                 String roleIds = list.get(0).getRole_ids();
+                System.out.println("roleIds = " + roleIds);
                 int expireTime = MyUtil.getRefreshTime();
                 obj.put("login_name", userLoginName);
                 obj.put("username", userName);

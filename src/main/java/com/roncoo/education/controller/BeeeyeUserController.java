@@ -68,7 +68,7 @@ public class BeeeyeUserController {
     @RequestMapping("get")
     public JSONObject get(HttpServletRequest request) {
 //        String select = " SELECT * FROM " + tableName;
-        String select = "select zh_names, user.ids, user.email, user.login_name, user.username, user.phone, user.status " +
+        String select = "select zh_names, user.ids, user.email, user.login_name, user.username, user.phone, user.status, user.role_ids " +
                 "from common_user  as user inner join common_role  as role on user.role_ids = role.ids";
         String count = " SELECT count(*) FROM  " + tableName;
         String pageSql = " limit ?, ? ";
@@ -94,7 +94,7 @@ public class BeeeyeUserController {
 //            String select = "select zh_names, user.ids, user.email, user.login_name, user.username, user.phone, user.status " +
 //                    "from common_user  as user where ids = ? inner join common_role  as role on user.role_ids = role.ids"
 //                    + " where user.ids = ? ";
-            String select = "select zh_names, user.ids, user.email, user.login_name, user.username, user.phone, user.status " +
+            String select = "select zh_names, user.ids, user.email, user.login_name, user.username, user.phone, user.status, user.role_ids " +
                     "from (select * from common_user where ids = ? ) as user " +
                     "inner join common_role  as role on user.role_ids = role.ids";
             User user = jdbcTemplate.queryForObject(select, new UserRowMapper(), ids);
