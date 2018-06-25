@@ -29,7 +29,7 @@ public class BeeeyePelfController {
 
     @RequestMapping("get")
     public JSONObject get(HttpServletRequest request){
-        JSONObject jsonObj = null;
+        JSONObject jsonObj;
         Map<String, Object> json = MyUtil.getJsonData(request);
         Map<String, Object> row = (Map<String, Object>) json.get("row");
         String hostIds = row.get("host_ids").toString();
@@ -49,10 +49,7 @@ public class BeeeyePelfController {
         Map<String, Object> query = (Map<String, Object>) json.get("query");
         List<Map<String, Object>> sort = (List<Map<String, Object>>) json.get("sort");
 
-        String querySql = " ", sortSql = " ";
-
-//                    System.out.println("query = " + query);
-//                    System.out.println("sort = " + sort);
+        String querySql = "", sortSql = "";
         if(query != null){
             for(String key : query.keySet()){
                 Object value = query.get(key);
