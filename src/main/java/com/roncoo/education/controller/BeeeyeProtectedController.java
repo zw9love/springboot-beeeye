@@ -107,7 +107,7 @@ public class BeeeyeProtectedController {
     }
 
     @RequestMapping("/delete/{ids}")
-    public JSONObject delete(@PathVariable String ids) {
+    public JSONObject deleteById(@PathVariable String ids) {
         JSONObject jsonObj;
         String sql = " delete from " + tableName + " where ids = ? ";
         int effectRow = jdbcTemplate.update(sql, ids);

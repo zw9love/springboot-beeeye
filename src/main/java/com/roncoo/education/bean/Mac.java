@@ -9,6 +9,8 @@ public class Mac {
     private String host_ids;
     private String sub_ids;
     private String obj_ids;
+    private String subject;
+    private String object;
     private int type;
     private int privilege;
 
@@ -58,5 +60,21 @@ public class Mac {
 
     public void setPrivilege(int privilege) {
         this.privilege = privilege;
+    }
+
+    public String getSubject() {
+        return subject;
+    }
+
+    public void setSubject(String subject) {
+        this.subject = subject;
+    }
+
+    public String getObject() {
+        return object;
+    }
+
+    public void setObject(String object) {
+        this.object = object;
     }
 }

@@ -83,7 +83,8 @@ public class BeeeyeUserSubjectController {
     }
 
 
-    @RequestMapping("post")
+//    @RequestMapping("post")
+    @RequestMapping("sysusepost")
     public JSONObject post(HttpServletRequest request) {
         JSONObject jsonObj;
         Map<String, Object> json = MyUtil.getJsonData(request);
@@ -94,9 +95,9 @@ public class BeeeyeUserSubjectController {
         String host_ids = MyUtil.getString(json, "host_ids");
         int sens_value = MyUtil.getInt(json, "sens_value");
         int reli_value = MyUtil.getInt(json, "reli_value");
-        String sql = " INSERT INTO " + tableName + " (ids, host_ids, username, dept, mail, sens_value, reli_value, login_name, contact, cert_sn) VALUES ( ?, ?, ?, ?, ?, ?, ?, '', '', '')";
+        String sql = " INSERT INTO " + tableName + " (ids, username, dept, mail, sens_value, reli_value, login_name, contact, cert_sn) VALUES ( ?, ?, ?, ?, ?, ?, '', '', '')";
         String sqlHost = " INSERT INTO beeneedle_user_host (ids, user_ids, host_ids) VALUES (?, ?, ?) ";
-        int effectRow = jdbcTemplate.update(sql, ids, host_ids, username, dept, mail, sens_value, reli_value);
+        int effectRow = jdbcTemplate.update(sql, ids, username, dept, mail, sens_value, reli_value);
         int hostEffectRow = jdbcTemplate.update(sqlHost, MyUtil.getRandomString(), ids, host_ids);
         if (effectRow < 1 || hostEffectRow < 1)
             //当sql语句的任何一条没有执行成功，就回滚的初始状态
@@ -107,7 +108,7 @@ public class BeeeyeUserSubjectController {
     }
 
     @RequestMapping("/delete/{ids}")
-    public JSONObject delete(@PathVariable String ids) {
+    public JSONObject deleteById(@PathVariable String ids) {
         JSONObject jsonObj;
         String sql = " delete from " + tableName + " where ids = ? ";
         String sqlHost = " delete from beeneedle_user_host where user_ids = ? ";

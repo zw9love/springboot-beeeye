@@ -31,25 +31,36 @@ public class BeeeyeObjectLabelController {
 
     @RequestMapping("get")
     public JSONObject get(HttpServletRequest request) {
+        JSONObject jsonObj;
         String select = " SELECT * FROM  " + tableName;
-//        String where = " where host_ids = ? ";
-        String where = " as bol left join (select process_ids from beeneedle_object_host where host_ids = ?) as boh on bol.ids = boh.object_ids ";
+        // SELECT * FROM beeneedle_object_label where type = 2 and ids in (select object_ids from beeneedle_object_host where host_ids = '5b23262076a7386c198d4577')
+        String from = " as bol left join (select object_ids from beeneedle_object_host where host_ids = ?) as boh on bol.ids = boh.object_ids ";
+        String where = " where bol.type = ? ";
         String count = " SELECT count(*) FROM  " + tableName;
         String pageSql = " limit ?, ? ";
         Map<String, Object> json = MyUtil.getJsonData(request);
         Map<String, Object> page = (Map<String, Object>) json.get("page");
         Map<String, Object> row = (Map<String, Object>) json.get("row");
         String hostIds = row.get("host_ids").toString();
-        int pageNumber = (int) Double.parseDouble(page.get("pageNumber").toString());
-        int pageSize = (int) Double.parseDouble(page.get("pageSize").toString());
-        int pageStart = (pageNumber - 1) * pageSize;
-        Object[] params = new Object[]{hostIds, pageStart, pageSize};
-        List<ObjectLabel> list = jdbcTemplate.query(select + where + pageSql, params, new ObjectLabelRowMapper());
-        // 获取总数
-        Integer totalRow = jdbcTemplate.queryForObject(count, Integer.class);
-        int totalPage = (int) Math.ceil((double) totalRow / (double) pageSize);
-        JSONObject resObj = MyUtil.getPageJson(list, pageNumber, pageSize, totalPage, totalRow);
-        JSONObject jsonObj = MyUtil.getJson("成功", 200, resObj);
+        Object[] params;
+        if(page == null){
+            String type = row.get("type").toString();
+            params = new Object[]{hostIds, type};
+            List<ObjectLabel> list = jdbcTemplate.query(select + from + where, params, new ObjectLabelRowMapper());
+            jsonObj = MyUtil.getJson("成功", 200, list);
+        }else{
+            int pageNumber = (int) Double.parseDouble(page.get("pageNumber").toString());
+            int pageSize = (int) Double.parseDouble(page.get("pageSize").toString());
+            int pageStart = (pageNumber - 1) * pageSize;
+            params = new Object[]{hostIds, pageStart, pageSize};
+            List<ObjectLabel> list = jdbcTemplate.query(select + from + pageSql, params, new ObjectLabelRowMapper());
+            // 获取总数
+            Integer totalRow = jdbcTemplate.queryForObject(count, Integer.class);
+            int totalPage = (int) Math.ceil((double) totalRow / (double) pageSize);
+            JSONObject resObj = MyUtil.getPageJson(list, pageNumber, pageSize, totalPage, totalRow);
+            jsonObj = MyUtil.getJson("成功", 200, resObj);
+        }
+
         return jsonObj;
     }
 
@@ -111,7 +122,7 @@ public class BeeeyeObjectLabelController {
 
     @Transactional
     @RequestMapping("/delete/{ids}")
-    public JSONObject delete(@PathVariable String ids) {
+    public JSONObject deleteById(@PathVariable String ids) {
         JSONObject jsonObj;
         String sql = " delete from " + tableName + " where ids = ? ";
         String sqlHost = " delete from beeneedle_object_host where object_ids = ? ";
