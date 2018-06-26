@@ -37,7 +37,7 @@ public class BeeeyeProcessSubjectController {
         String select = " SELECT * FROM  " + tableName;
         String where = " as bps left join (select process_ids from beeneedle_process_host where host_ids = ?) as bph on bps.ids = bph.process_ids ";
         String count = " SELECT count(*) FROM  " + tableName;
-        String pageSql = "";
+        String pageSql = " limit ?, ? ";
         Map<String, Object> json = MyUtil.getJsonData(request);
         Map<String, Object> page = (Map<String, Object>) json.get("page");
         Map<String, Object> row = (Map<String, Object>) json.get("row");
@@ -45,13 +45,12 @@ public class BeeeyeProcessSubjectController {
         Object[] params;
         if(page == null){
             params = new Object[]{hostIds};
-            List<ProcessSubject> list = jdbcTemplate.query(select + where + pageSql, params, new ProcessSubjectRowMapper());
+            List<ProcessSubject> list = jdbcTemplate.query(select + where, params, new ProcessSubjectRowMapper());
             jsonObj = MyUtil.getJson("成功", 200, list);
         }else{
             int pageNumber = (int) Double.parseDouble(page.get("pageNumber").toString());
             int pageSize = (int) Double.parseDouble(page.get("pageSize").toString());
             int pageStart = (pageNumber - 1) * pageSize;
-            pageSql = " limit ?, ? ";
             params = new Object[]{hostIds, pageStart, pageSize};
             List<ProcessSubject> list = jdbcTemplate.query(select + where + pageSql, params, new ProcessSubjectRowMapper());
             // 获取总数
