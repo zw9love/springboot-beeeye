@@ -31,7 +31,7 @@ public class BeeeyeUserSubjectController {
         JSONObject jsonObj;
         String select = " SELECT * FROM  " + tableName;
         String where = " as bus left join (select user_ids from beeneedle_user_host where host_ids = ?) as buh on bus.ids = buh.user_ids ";
-        String count = " SELECT count(*) FROM  " + tableName;
+        String count = " SELECT count(*) FROM  " + tableName + where;
         String pageSql = " limit ?, ? ";
         Map<String, Object> json = MyUtil.getJsonData(request);
         Map<String, Object> page = (Map<String, Object>) json.get("page");
@@ -48,9 +48,10 @@ public class BeeeyeUserSubjectController {
             int pageSize = (int) Double.parseDouble(page.get("pageSize").toString());
             int pageStart = (pageNumber - 1) * pageSize;
             params = new Object[]{hostIds, pageStart, pageSize};
+            Object[] countParams = {hostIds};
             List<UserSubject> list = jdbcTemplate.query(select + where + pageSql, params, new UserSubjectRowMapper());
             // 获取总数
-            Integer totalRow = jdbcTemplate.queryForObject(count, Integer.class);
+            Integer totalRow = jdbcTemplate.queryForObject(count, countParams, Integer.class);
             int totalPage = (int) Math.ceil((double) totalRow / (double) pageSize);
             JSONObject resObj = MyUtil.getPageJson(list, pageNumber, pageSize, totalPage, totalRow);
             jsonObj = MyUtil.getJson("成功", 200, resObj);

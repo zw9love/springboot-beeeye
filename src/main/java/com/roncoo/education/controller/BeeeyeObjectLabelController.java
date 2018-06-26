@@ -36,7 +36,7 @@ public class BeeeyeObjectLabelController {
         // SELECT * FROM beeneedle_object_label where type = 2 and ids in (select object_ids from beeneedle_object_host where host_ids = '5b23262076a7386c198d4577')
         String from = " as bol left join (select object_ids from beeneedle_object_host where host_ids = ?) as boh on bol.ids = boh.object_ids ";
         String where = " where bol.type = ? ";
-        String count = " SELECT count(*) FROM  " + tableName;
+        String count = " SELECT count(*) FROM  " + tableName + from;
         String pageSql = " limit ?, ? ";
         Map<String, Object> json = MyUtil.getJsonData(request);
         Map<String, Object> page = (Map<String, Object>) json.get("page");
@@ -53,9 +53,10 @@ public class BeeeyeObjectLabelController {
             int pageSize = (int) Double.parseDouble(page.get("pageSize").toString());
             int pageStart = (pageNumber - 1) * pageSize;
             params = new Object[]{hostIds, pageStart, pageSize};
+            Object[] countParams = {hostIds};
             List<ObjectLabel> list = jdbcTemplate.query(select + from + pageSql, params, new ObjectLabelRowMapper());
             // 获取总数
-            Integer totalRow = jdbcTemplate.queryForObject(count, Integer.class);
+            Integer totalRow = jdbcTemplate.queryForObject(count, countParams, Integer.class);
             int totalPage = (int) Math.ceil((double) totalRow / (double) pageSize);
             JSONObject resObj = MyUtil.getPageJson(list, pageNumber, pageSize, totalPage, totalRow);
             jsonObj = MyUtil.getJson("成功", 200, resObj);

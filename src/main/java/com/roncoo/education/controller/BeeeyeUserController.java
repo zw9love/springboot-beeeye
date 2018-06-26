@@ -70,7 +70,7 @@ public class BeeeyeUserController {
 //        String select = " SELECT * FROM " + tableName;
         String select = "select zh_names, user.ids, user.email, user.login_name, user.username, user.phone, user.status, user.role_ids " +
                 "from common_user  as user inner join common_role  as role on user.role_ids = role.ids";
-        String count = " SELECT count(*) FROM  " + tableName;
+        String count = " SELECT count(*) FROM common_user  as user inner join common_role  as role on user.role_ids = role.ids";
         String pageSql = " limit ?, ? ";
         Map<String, Object> json = MyUtil.getJsonData(request);
         Map<String, Object> page = (Map<String, Object>) json.get("page");
