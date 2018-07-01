@@ -8,7 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -47,6 +49,38 @@ public class BeeeyeSPECSoftWareController {
         int totalPage = (int) Math.ceil((double) totalRow / (double) pageSize);
         JSONObject resObj = MyUtil.getPageJson(list, pageNumber, pageSize, totalPage, totalRow);
         JSONObject jsonObj = MyUtil.getJson("成功", 200, resObj);
+        return jsonObj;
+    }
+
+    //处理文件上传
+    @RequestMapping("post")
+    public JSONObject post(@RequestParam("file") MultipartFile file, HttpServletRequest request) {
+        JSONObject jsonObj;
+        String fileName = file.getOriginalFilename();
+        String platform_ids = request.getParameter("platform_ids");
+        String group_name = request.getParameter("group_name");
+        String version = request.getParameter("version");
+//        System.out.println("fileName = " + fileName);
+//        System.out.println("platform_ids = " + platform_ids);
+//        System.out.println("group_name = " + group_name);
+//        System.out.println("version = " + version);
+//        String contentType = file.getContentType();
+//        System.out.println("getContentType = " + contentType);
+        // 修改上传路径
+        String filePath = request.getSession().getServletContext().getRealPath("upload/");
+//        System.out.println("filePath = " + filePath);
+        try {
+            MyUtil.uploadFile(file.getBytes(), filePath, fileName);
+        } catch (Exception e) {
+            // TODO: handle exception
+        }
+        String ids = MyUtil.getRandomString();
+        String sql = " INSERT INTO " + tableName + " (ids, platform_ids, group_name, version, hash) VALUES ( ?, ?, ?, ?, 'add')";
+        int effectRow = jdbcTemplate.update(sql, ids, platform_ids, group_name, version);
+        if (effectRow > 0)
+            jsonObj = MyUtil.getJson("成功", 200, null);
+        else
+            jsonObj = MyUtil.getJson("失败", 606, null);
         return jsonObj;
     }
 

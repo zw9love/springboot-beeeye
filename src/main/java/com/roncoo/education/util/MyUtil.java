@@ -5,6 +5,8 @@ package com.roncoo.education.util;
  */
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.*;
 
@@ -152,6 +154,17 @@ public class MyUtil {
 //        }
 //        return str;
         return (String)json.get(name);
+    }
+
+    public static void uploadFile(byte[] file, String filePath, String fileName) throws Exception {
+        File targetFile = new File(filePath);
+        if(!targetFile.exists()){
+            targetFile.mkdirs();
+        }
+        FileOutputStream out = new FileOutputStream(filePath+fileName);
+        out.write(file);
+        out.flush();
+        out.close();
     }
 
     /**
