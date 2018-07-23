@@ -61,217 +61,228 @@ public class BeeeyeUserController {
         return sqlSessionFactory;
     }
 
-    // 1、以下是jdbcTemplate获取数据
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
-
-    @RequestMapping("get")
-    public JSONObject get(HttpServletRequest request) {
-//        String select = " SELECT * FROM " + tableName;
-        String select = "select zh_names, user.ids, user.email, user.login_name, user.username, user.phone, user.status, user.role_ids " +
-                "from common_user  as user inner join common_role  as role on user.role_ids = role.ids";
-        String count = " SELECT count(*) FROM common_user  as user inner join common_role  as role on user.role_ids = role.ids";
-        String pageSql = " limit ?, ? ";
-        Map<String, Object> json = MyUtil.getJsonData(request);
-        Map<String, Object> page = (Map<String, Object>) json.get("page");
-        int pageNumber = MyUtil.getInt(page, "pageNumber");
-        int pageSize = MyUtil.getInt(page, "pageSize");
-        int pageStart = (pageNumber - 1) * pageSize;
-        Object[] params = new Object[]{pageStart, pageSize};
-        List<User> list = jdbcTemplate.query(select + pageSql, params, new UserRowMapper());
-        // 获取总数
-        Integer totalRow = jdbcTemplate.queryForObject(count, Integer.class);
-        int totalPage = (int) Math.ceil((double) totalRow / (double) pageSize);
-        JSONObject resObj = MyUtil.getPageJson(list, pageNumber, pageSize, totalPage, totalRow);
-        JSONObject jsonObj = MyUtil.getJson("成功", 200, resObj);
-        return jsonObj;
-    }
-
-    @RequestMapping("get/{ids}")
-    public JSONObject getById(@PathVariable String ids) {
-        JSONObject jsonObj;
-        if (ids != null) {
-//            String select = "select zh_names, user.ids, user.email, user.login_name, user.username, user.phone, user.status " +
-//                    "from common_user  as user where ids = ? inner join common_role  as role on user.role_ids = role.ids"
-//                    + " where user.ids = ? ";
-            String select = "select zh_names, user.ids, user.email, user.login_name, user.username, user.phone, user.status, user.role_ids " +
-                    "from (select * from common_user where ids = ? ) as user " +
-                    "inner join common_role  as role on user.role_ids = role.ids";
-            User user = jdbcTemplate.queryForObject(select, new UserRowMapper(), ids);
-            jsonObj = MyUtil.getJson("成功", 200, user);
-        } else {
-            jsonObj = MyUtil.getJson("失败", 200, null);
-        }
-        return jsonObj;
-    }
-
-    @RequestMapping("delete/{ids}")
-    public JSONObject deleteById(@PathVariable String ids){
-        JSONObject jsonObj;
-        String sql = " delete from " + tableName + " where ids = ? ";
-        int effectRow = jdbcTemplate.update(sql, ids);
-        if (effectRow > 0)
-            jsonObj = MyUtil.getJson("成功", 200, null);
-        else
-            jsonObj = MyUtil.getJson("失败", 606, null);
-        return jsonObj;
-    }
-
-    @RequestMapping("post")
-    public JSONObject post(HttpServletRequest request) {
-        JSONObject jsonObj;
-        String sql = "INSERT INTO " + tableName + " (ids, username, login_name, login_pwd, email, role_ids, record_hash, phone ) VALUES ( ?, ?, ?, ?, ?, ?, '', '13798953474')";
-        HttpSession session = request.getSession();
-        String token = request.getHeader("token");
-        String role_ids;
-        if(token.equals("debug")){
-            role_ids = "0";
-        }else{
-            JSONObject role = (JSONObject) session.getAttribute(token);
-            role_ids = (String) role.get("roleIds");
-        }
-        Map<String, Object> json = MyUtil.getJsonData(request);
-        String ids = MyUtil.getRandomString();
-        String username = MyUtil.getString(json, "username");
-        String loginName = MyUtil.getString(json, "login_name");
-        String loginPwd = MD5Util.encrypt(MyUtil.getString(json, "login_pwd"));
-        String email = MyUtil.getString(json, "email");
-        Object[] params = new Object[]{ids, username, loginName, loginPwd, email, role_ids};
-        int effectRow = jdbcTemplate.update(sql, params);
-        if (effectRow > 0)
-            jsonObj = MyUtil.getJson("成功", 200, null);
-        else
-            jsonObj = MyUtil.getJson("失败", 606, null);
-        return jsonObj;
-    }
-
-    @RequestMapping("put")
-    public JSONObject put(HttpServletRequest request) {
-        JSONObject jsonObj;
-        String sql = " UPDATE " + tableName + " SET email = ?, username = ? where ids = ? ";
-        Map<String, Object> json = MyUtil.getJsonData(request);
-        String ids = MyUtil.getString(json, "ids");
-        String username = MyUtil.getString(json, "username");
-        String email = MyUtil.getString(json, "email");
-        Object[] params = new Object[]{email, username, ids};
-        int effectRow = jdbcTemplate.update(sql, params);
-        if (effectRow > 0)
-            jsonObj = MyUtil.getJson("成功", 200, null);
-        else
-            jsonObj = MyUtil.getJson("失败", 606, null);
-        return jsonObj;
-    }
-
-
-//    // 2、以下是mybatis获取数据
+//    // 1、以下是jdbcTemplate获取数据
+//    @Autowired
+//    private JdbcTemplate jdbcTemplate;
+//
 //    @RequestMapping("get")
-//    public JSONObject get(HttpServletRequest request, HttpServletResponse response) throws JSONException {
+//    public JSONObject get(HttpServletRequest request) {
+////        String select = " SELECT * FROM " + tableName;
+//        String select = "select zh_names, user.ids, user.email, user.login_name, user.username, user.phone, user.status, user.role_ids " +
+//                "from common_user  as user inner join common_role  as role on user.role_ids = role.ids";
+//        String count = " SELECT count(*) FROM common_user  as user inner join common_role  as role on user.role_ids = role.ids";
+//        String pageSql = " limit ?, ? ";
 //        Map<String, Object> json = MyUtil.getJsonData(request);
 //        Map<String, Object> page = (Map<String, Object>) json.get("page");
 //        int pageNumber = MyUtil.getInt(page, "pageNumber");
 //        int pageSize = MyUtil.getInt(page, "pageSize");
 //        int pageStart = (pageNumber - 1) * pageSize;
-//        // 1、map
-//        Map<String, Object> pageParam = new HashMap<String, Object>();
-//        pageParam.put("pageSize", pageSize);
-//        pageParam.put("pageStart", pageStart);
-//        // 2、javabean
-////        PageParam pageParam = new PageParam();
-////        pageParam.setPageStart(pageStart);
-////        pageParam.setPageSize(pageSize);
-//        SqlSession session = sqlSessionFactory.openSession();
-//        try {
-//            List<User> list = session.selectList("selectUserPage", pageParam);
-//            session.commit();
-//            return MyUtil.getJson("成功", 200, list);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            return MyUtil.getJson("失败", 606, null);
-//        } finally {
-//            session.close();
-//        }
+//        Object[] params = new Object[]{pageStart, pageSize};
+//        List<User> list = jdbcTemplate.query(select + pageSql, params, new UserRowMapper());
+//        // 获取总数
+//        Integer totalRow = jdbcTemplate.queryForObject(count, Integer.class);
+//        int totalPage = (int) Math.ceil((double) totalRow / (double) pageSize);
+//        JSONObject resObj = MyUtil.getPageJson(list, pageNumber, pageSize, totalPage, totalRow);
+//        JSONObject jsonObj = MyUtil.getJson("成功", 200, resObj);
+//        return jsonObj;
 //    }
 //
-//    @RequestMapping("/get/{ids}")
-//    public JSONObject getById(@PathVariable String ids, HttpServletRequest request, HttpServletResponse response) {
-//        SqlSession session = sqlSessionFactory.openSession();
-//        try {
-//            User user = session.selectOne("selectUserByID", ids);
-//            session.commit();
-//            return MyUtil.getJson("成功", 200, user);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            return MyUtil.getJson("失败", 606, null);
-//        } finally {
-//            session.close();
+//    @RequestMapping("get/{ids}")
+//    public JSONObject getById(@PathVariable String ids) {
+//        JSONObject jsonObj;
+//        if (ids != null) {
+////            String select = "select zh_names, user.ids, user.email, user.login_name, user.username, user.phone, user.status " +
+////                    "from common_user  as user where ids = ? inner join common_role  as role on user.role_ids = role.ids"
+////                    + " where user.ids = ? ";
+//            String select = "select zh_names, user.ids, user.email, user.login_name, user.username, user.phone, user.status, user.role_ids " +
+//                    "from (select * from common_user where ids = ? ) as user " +
+//                    "inner join common_role  as role on user.role_ids = role.ids";
+//            User user = jdbcTemplate.queryForObject(select, new UserRowMapper(), ids);
+//            jsonObj = MyUtil.getJson("成功", 200, user);
+//        } else {
+//            jsonObj = MyUtil.getJson("失败", 200, null);
 //        }
+//        return jsonObj;
 //    }
 //
-//    @RequestMapping("/post")
-//    public JSONObject post(HttpServletRequest request, HttpServletResponse response) {
+//    @RequestMapping("delete/{ids}")
+//    public JSONObject deleteById(@PathVariable String ids){
+//        JSONObject jsonObj;
+//        String sql = " delete from " + tableName + " where ids = ? ";
+//        int effectRow = jdbcTemplate.update(sql, ids);
+//        if (effectRow > 0)
+//            jsonObj = MyUtil.getJson("成功", 200, null);
+//        else
+//            jsonObj = MyUtil.getJson("失败", 606, null);
+//        return jsonObj;
+//    }
+//
+//    @RequestMapping("post")
+//    public JSONObject post(HttpServletRequest request) {
+//        JSONObject jsonObj;
+//        String sql = "INSERT INTO " + tableName + " (ids, username, login_name, login_pwd, email, role_ids, record_hash, phone ) VALUES ( ?, ?, ?, ?, ?, ?, '', '13798953474')";
+//        HttpSession session = request.getSession();
+//        String token = request.getHeader("token");
+//        String role_ids;
+//        if(token.equals("debug")){
+//            role_ids = "0";
+//        }else{
+//            JSONObject role = (JSONObject) session.getAttribute(token);
+//            role_ids = (String) role.get("roleIds");
+//        }
 //        Map<String, Object> json = MyUtil.getJsonData(request);
 //        String ids = MyUtil.getRandomString();
 //        String username = MyUtil.getString(json, "username");
 //        String loginName = MyUtil.getString(json, "login_name");
 //        String loginPwd = MD5Util.encrypt(MyUtil.getString(json, "login_pwd"));
 //        String email = MyUtil.getString(json, "email");
-//        SqlSession session = sqlSessionFactory.openSession();
-//        Map<String, Object> params = new HashMap<String, Object>();
-//        params.put("username", username);
-//        params.put("email", email);
-//        params.put("loginName", loginName);
-//        params.put("loginPwd", loginPwd);
-//        params.put("ids", ids);
-//        try {
-//            session.insert("insertUser", params);
-////            session.update("updateUser", params);
-//            session.commit();
-//            return MyUtil.getJson("成功", 200, null);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            return MyUtil.getJson("失败", 606, null);
-//        } finally {
-//            session.close();
-//        }
+//        Object[] params = new Object[]{ids, username, loginName, loginPwd, email, role_ids};
+//        int effectRow = jdbcTemplate.update(sql, params);
+//        if (effectRow > 0)
+//            jsonObj = MyUtil.getJson("成功", 200, null);
+//        else
+//            jsonObj = MyUtil.getJson("失败", 606, null);
+//        return jsonObj;
 //    }
 //
-//    @RequestMapping("/put")
-//    public JSONObject put(HttpServletRequest request, HttpServletResponse response) {
+//    @RequestMapping("put")
+//    public JSONObject put(HttpServletRequest request) {
+//        JSONObject jsonObj;
+//        String sql = " UPDATE " + tableName + " SET email = ?, username = ? where ids = ? ";
 //        Map<String, Object> json = MyUtil.getJsonData(request);
 //        String ids = MyUtil.getString(json, "ids");
 //        String username = MyUtil.getString(json, "username");
 //        String email = MyUtil.getString(json, "email");
-//        SqlSession session = sqlSessionFactory.openSession();
-//        Map<String, Object> params = new HashMap<String, Object>();
-//        params.put("username", username);
-//        params.put("email", email);
-//        params.put("ids", ids);
-//        try {
-//            session.update("updateUser", params);
-//            session.commit();
-//            return MyUtil.getJson("成功", 200, null);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            return MyUtil.getJson("失败", 606, null);
-//        } finally {
-//            session.close();
-//        }
+//        Object[] params = new Object[]{email, username, ids};
+//        int effectRow = jdbcTemplate.update(sql, params);
+//        if (effectRow > 0)
+//            jsonObj = MyUtil.getJson("成功", 200, null);
+//        else
+//            jsonObj = MyUtil.getJson("失败", 606, null);
+//        return jsonObj;
 //    }
-//
-//    @RequestMapping("/delete/{ids}")
-//    public JSONObject deleteById(@PathVariable String ids, HttpServletRequest request, HttpServletResponse response) {
-//        SqlSession session = sqlSessionFactory.openSession();
-//        try {
-//            session.delete("deleteUserByID", ids);
-//            session.commit();
-//            return MyUtil.getJson("成功", 200, null);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            return MyUtil.getJson("失败", 606, null);
-//        } finally {
-//            session.close();
-//        }
-//    }
+
+
+    // 2、以下是mybatis获取数据
+    @RequestMapping("get")
+    public JSONObject get(HttpServletRequest request, HttpServletResponse response) throws JSONException {
+        Map<String, Object> json = MyUtil.getJsonData(request);
+        Map<String, Object> page = (Map<String, Object>) json.get("page");
+        int pageNumber = MyUtil.getInt(page, "pageNumber");
+        int pageSize = MyUtil.getInt(page, "pageSize");
+        int pageStart = (pageNumber - 1) * pageSize;
+        // 1、map
+        Map<String, Object> pageParam = new HashMap<String, Object>();
+        pageParam.put("pageSize", pageSize);
+        pageParam.put("pageStart", pageStart);
+        // 2、javabean
+//        PageParam pageParam = new PageParam();
+//        pageParam.setPageStart(pageStart);
+//        pageParam.setPageSize(pageSize);
+        SqlSession session = sqlSessionFactory.openSession();
+        try {
+
+            List<User> list = session.selectList("selectUserPage", pageParam);
+            Integer totalRow = session.selectOne("getTotal");
+            int totalPage = (int) Math.ceil((double) totalRow / (double) pageSize);
+            JSONObject resObj = MyUtil.getPageJson(list, pageNumber, pageSize, totalPage, totalRow);
+            session.commit();
+            return MyUtil.getJson("成功", 200, resObj);
+        } catch (Exception e) {
+            e.printStackTrace();
+            session.rollback();
+            return MyUtil.getJson("失败", 606, null);
+        } finally {
+            session.close();
+        }
+    }
+
+    @RequestMapping("/get/{ids}")
+    public JSONObject getById(@PathVariable String ids, HttpServletRequest request, HttpServletResponse response) {
+        SqlSession session = sqlSessionFactory.openSession();
+        try {
+            User user = session.selectOne("selectUserByID", ids);
+            session.commit();
+            return MyUtil.getJson("成功", 200, user);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return MyUtil.getJson("失败", 606, null);
+        } finally {
+            session.close();
+        }
+    }
+
+    @RequestMapping("/post")
+    public JSONObject post(HttpServletRequest request, HttpServletResponse response) {
+        Map<String, Object> json = MyUtil.getJsonData(request);
+        String ids = MyUtil.getRandomString();
+        String username = MyUtil.getString(json, "username");
+        String loginName = MyUtil.getString(json, "login_name");
+        String loginPwd = MD5Util.encrypt(MyUtil.getString(json, "login_pwd"));
+        String email = MyUtil.getString(json, "email");
+        SqlSession session = sqlSessionFactory.openSession();
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("username", username);
+        params.put("email", email);
+        params.put("loginName", loginName);
+        params.put("loginPwd", loginPwd);
+        params.put("ids", ids);
+        try {
+            int insertCount = session.insert("insertUser", params);
+            if(insertCount >= 0){
+//                System.out.println(insertCount);
+                session.commit();
+                return MyUtil.getJson("成功", 200, null);
+            }else{
+                session.rollback();
+                return MyUtil.getJson("失败", 606, null);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return MyUtil.getJson("失败", 606, null);
+        } finally {
+            session.close();
+        }
+    }
+
+    @RequestMapping("/put")
+    public JSONObject put(HttpServletRequest request, HttpServletResponse response) {
+        Map<String, Object> json = MyUtil.getJsonData(request);
+        String ids = MyUtil.getString(json, "ids");
+        String username = MyUtil.getString(json, "username");
+        String email = MyUtil.getString(json, "email");
+        SqlSession session = sqlSessionFactory.openSession();
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("username", username);
+        params.put("email", email);
+        params.put("ids", ids);
+        try {
+            session.update("updateUser", params);
+            session.commit();
+            return MyUtil.getJson("成功", 200, null);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return MyUtil.getJson("失败", 606, null);
+        } finally {
+            session.close();
+        }
+    }
+
+    @RequestMapping("/delete/{ids}")
+    public JSONObject deleteById(@PathVariable String ids, HttpServletRequest request, HttpServletResponse response) {
+        SqlSession session = sqlSessionFactory.openSession();
+        try {
+            session.delete("deleteUserByID", ids);
+            session.commit();
+            return MyUtil.getJson("成功", 200, null);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return MyUtil.getJson("失败", 606, null);
+        } finally {
+            session.close();
+        }
+    }
 
 //    ///3、以下是hibernate获取数据
 //    private static SessionFactory sf;

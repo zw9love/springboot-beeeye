@@ -12,6 +12,9 @@
     <!--<select id="selectUserPage"  resultType="com.roncoo.education.bean.User" parameterType="com.roncoo.education.bean.PageParam">-->
       <!--SELECT * FROM common_user limit #{pageStart},  #{pageSize}-->
     <!--</select>-->
+    <select id="getTotal" resultType="int">
+        SELECT count(*) as total FROM common_user
+    </select>
     <update id="updateUser" parameterType="java.util.Map">
         UPDATE common_user SET username = #{username}, email = #{email} where ids = #{ids}
     </update>

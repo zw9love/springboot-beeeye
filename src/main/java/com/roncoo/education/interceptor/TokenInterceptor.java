@@ -30,12 +30,17 @@ public class TokenInterceptor implements HandlerInterceptor {
                 token = request.getHeader("token");
             }
 
+            if(token == null){
+                response.getWriter().write(MyUtil.getJson("用户登录失效。", 611, "").toString());
+                return false;
+            }
+
             if (token.equals("debug")) {
                 return true;
             } else {
-                return true;
-//                response.getWriter().write(MyUtil.getJson("用户登录失效。", 611, "").toString());
-//                return false;
+//                return true;
+                response.getWriter().write(MyUtil.getJson("用户登录失效。", 611, "").toString());
+                return false;
 
 //				HttpSession session = request.getSession();
 //				JSONObject loginObj = (JSONObject) session.getAttribute(token);
