@@ -48,7 +48,7 @@ public class MyUtil {
             resObj.put("pageSize", pageSize);
             resObj.put("totalPage", totalPage);
             resObj.put("totalRow", totalRow);
-            resObj.put("firstPage", pageNumber == 1 ? true : false);
+            resObj.put("firstPage", pageNumber == 1);
             boolean lastPage;
             if (totalPage == 0)
                 lastPage = true;
@@ -154,6 +154,11 @@ public class MyUtil {
 //        }
 //        return str;
         return (String)json.get(name);
+    }
+
+    public static List<String> getStringList(Map<String, Object> json, String name){
+
+        return (List<String>) json.get(name);
     }
 
     public static void uploadFile(byte[] file, String filePath, String fileName) throws Exception {
