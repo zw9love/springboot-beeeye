@@ -66,7 +66,7 @@ public class BeeeyeSPECSoftWareController {
 //        System.out.println("version = " + version);
 //        String contentType = file.getContentType();
 //        System.out.println("getContentType = " + contentType);
-        // 修改上传路径
+        // 修改上传路径 会放在/target/spring-boot-beeeye-1.0.0-SNAPSHOT/upload文件夹
         String filePath = request.getSession().getServletContext().getRealPath("upload/");
 //        System.out.println("filePath = " + filePath);
         try {
