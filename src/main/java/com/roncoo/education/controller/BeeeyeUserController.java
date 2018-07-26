@@ -21,6 +21,7 @@ import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -31,6 +32,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.Reader;
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -61,10 +63,35 @@ public class BeeeyeUserController {
         return sqlSessionFactory;
     }
 
-//    // 1、以下是jdbcTemplate获取数据
-//    @Autowired
-//    private JdbcTemplate jdbcTemplate;
-//
+    // 1、以下是jdbcTemplate获取数据
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
+    @Transactional
+    @RequestMapping("transaction")
+    public JSONObject transaction(HttpServletRequest request, HttpServletResponse response) throws JSONException, SQLException {
+        JSONObject jsonObj;
+//        try {
+            System.out.println("进来操作sql了。。。");
+            String sql = " UPDATE acount SET money = money - 500 where username = 'zengwei' ";
+            jdbcTemplate.update(sql);
+
+            //这里模拟出现问题
+//            int a = 3 / 0;
+            System.out.println("这里能过来吗？？？。。。");
+
+            String sql2 = " UPDATE acount SET money = money + 500 where username = 'zangjie' ";
+            jdbcTemplate.update(sql2);
+
+            jsonObj = MyUtil.getJson("成功", 200, null);
+
+//        } catch (Exception e) {
+//            jsonObj = MyUtil.getJson("失败", 606, null);
+//        }
+        return jsonObj;
+    }
+
+
 //    @RequestMapping("get")
 //    public JSONObject get(HttpServletRequest request) {
 ////        String select = " SELECT * FROM " + tableName;
@@ -164,6 +191,8 @@ public class BeeeyeUserController {
 
 
     // 2、以下是mybatis获取数据
+
+    @Transactional(readOnly = true)
     @RequestMapping("get")
     public JSONObject get(HttpServletRequest request, HttpServletResponse response) throws JSONException {
         Map<String, Object> json = MyUtil.getJsonData(request);
@@ -229,11 +258,11 @@ public class BeeeyeUserController {
         params.put("ids", ids);
         try {
             int insertCount = session.insert("insertUser", params);
-            if(insertCount >= 0){
+            if (insertCount >= 0) {
 //                System.out.println(insertCount);
                 session.commit();
                 return MyUtil.getJson("成功", 200, null);
-            }else{
+            } else {
                 session.rollback();
                 return MyUtil.getJson("失败", 606, null);
             }
