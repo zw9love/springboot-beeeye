@@ -20,5 +20,6 @@
     <!--mapping文件路径配置-->
     <mappers>
         <mapper resource="mapping/User.xml"/>
+        <mapper resource="mapping/Menu.xml"/>
     </mappers>
 </configuration>
