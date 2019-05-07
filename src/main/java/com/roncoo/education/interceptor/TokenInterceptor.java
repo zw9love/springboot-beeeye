@@ -1,5 +1,7 @@
 package com.roncoo.education.interceptor;
 
+import com.alibaba.fastjson.JSONException;
+import com.alibaba.fastjson.JSONObject;
 import com.roncoo.education.util.MyUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,6 +10,8 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.util.Date;
 
 public class TokenInterceptor implements HandlerInterceptor {
     private static final Logger logger = LoggerFactory.getLogger(TokenInterceptor.class);
@@ -39,39 +43,39 @@ public class TokenInterceptor implements HandlerInterceptor {
                 return true;
             } else {
 //                return true;
-                response.getWriter().write(MyUtil.getJson("用户登录失效。", 611, "").toString());
-                return false;
+//                response.getWriter().write(MyUtil.getJson("用户登录失效。", 611, "").toString());
+//                return false;
 
-//				HttpSession session = request.getSession();
-//				JSONObject loginObj = (JSONObject) session.getAttribute(token);
-//				// 如果loginObj已经是null
-//				if (loginObj == null) {
-//					response.getWriter().write(MyUtil.getJson("用户登录失效。", 611, "").toString())
-//				} else {
-//					String loginName;
-//					try {
-//						loginName =(String) loginObj.get("login_name");
-//						String sessionToken = (String) session.getAttribute(loginName);
-//						int nowTime = Math.round(new Date().getTime() / 1000);
-//						int expireTime = (int)loginObj.get("expireTime");
-//						// 两个token值相同
-//						if(sessionToken.equals(token)) && expireTime >= nowTime){
-//							loginObj.put("expireTime", MyUtil.getRefreshTime()); // 刷新过期时间
-//							session.setAttribute(token, loginObj);
-//							return true;
-//						}else{
-//							session.removeAttribute(token);
-//							response.getWriter().write(MyUtil.getJson("用户登录失效。", 611, "").toString());
-//						}
-//					} catch (JSONException e) {
-//						e.printStackTrace();
-//					}
-//				}
+				HttpSession session = request.getSession();
+				JSONObject loginObj = (JSONObject) session.getAttribute(token);
+				// 如果loginObj已经是null
+				if (loginObj == null) {
+					response.getWriter().write(MyUtil.getJson("用户登录失效。", 611, "").toString());
+				} else {
+					String loginName;
+					try {
+						loginName =(String) loginObj.get("login_name");
+						String sessionToken = (String) session.getAttribute(loginName);
+						int nowTime = Math.round(new Date().getTime() / 1000);
+						int expireTime = (int)loginObj.get("expireTime");
+						// 两个token值相同
+						if(sessionToken.equals(token) && expireTime >= nowTime){
+							loginObj.put("expireTime", MyUtil.getRefreshTime()); // 刷新过期时间
+							session.setAttribute(token, loginObj);
+							return true;
+						}else{
+							session.removeAttribute(token);
+							response.getWriter().write(MyUtil.getJson("用户登录失效。", 611, "").toString());
+						}
+					} catch (JSONException e) {
+						e.printStackTrace();
+					}
+				}
             }
 
         }
 
-//        return false;
+        return false;
 //        return true;
     }
 
